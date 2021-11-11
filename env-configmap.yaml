@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+  name: udagram-api-user-config-cmap
+data:  
+  RDS_HOST: 'kgontu-project3-db.cmscx3mpd3ha.us-east-1.rds.amazonaws.com'
+  RDS_DATABASE: 'postgres'
+  RDS_DIALECT: 'postgres'
+  AWS_REGION: 'us-east-1'
+  AWS_PROFILE: 'default'
+  AWS_S3: 'udacity-project3-kg-bucket'
+  URL: 'http://localhost:8080'
+  JWT_SECRET: 'testing'

@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: udagram-api-user
+  name: udagram-api-user
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: udagram-api-user
+  template:
+    metadata:
+      labels:
+        name: udagram-api-user
+    spec:
+      imagePullSecrets:
+      - name: dockerhub
+      containers:
+      - image: kgontu12345/udagram-api-user:v1
+        name: udagram-api-user
+        imagePullPolicy: Always          
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"       
+        env:
+        - name: URL
+          valueFrom:
+            configMapKeyRef:
+              name: udagram-api-user-config-cmap
+              key: URL
+        - name: AWS_S3
+          valueFrom:
+            configMapKeyRef:
+              name: udagram-api-user-config-cmap
+              key: AWS_S3
+        - name: RDS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: udagram-api-user-config-cmap
+              key: RDS_HOST
+        - name: AWS_REGION
+          valueFrom:
+            configMapKeyRef:
+              name: udagram-api-user-config-cmap
+              key: AWS_REGION
+        - name: JWT_SECRET
+          valueFrom:
+            configMapKeyRef:
+              name: udagram-api-user-config-cmap
+              key: JWT_SECRET
+        - name: RDS_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: udagram-api-user-config-cmap
+              key: RDS_DATABASE
+        - name: AWS_PROFILE
+          valueFrom:
+            configMapKeyRef:
+              name: udagram-api-user-config-cmap
+              key: AWS_PROFILE     
+        - name: RDS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: udagram-api-user-config-cmap
+              key: RDS_HOST
+        - name: RDS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: env-secret
+              key: RDS_PASSWORD
+        - name: RDS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: env-secret
+              key: RDS_USERNAME      
+        volumeMounts:
+        - name: aws-secret
+          mountPath: "/root/.aws/"
+          readOnly: true         
+        ports:
+        - containerPort: 8080
+      restartPolicy: Always
+      volumes:
+      - name: aws-secret
+        secret:
+          secretName: aws-secret
